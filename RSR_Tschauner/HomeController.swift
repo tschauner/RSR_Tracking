@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import CoreLocation
 
-class ViewController: UIViewController {
+class HomeController: UIViewController {
+    
+    var locationManager: CLLocationManager?
     
     // rsr colors
     static var rsrBlue = UIColor(red: 37/255, green: 161/255, blue: 196/255, alpha: 1)
@@ -19,6 +22,7 @@ class ViewController: UIViewController {
         
         setupViews()
         setupNavBar()
+        initLocationManger()
     }
     
     
@@ -41,6 +45,13 @@ class ViewController: UIViewController {
     
     
     // ------ functions -----
+    
+    // initializes location manger - request locations service
+    func initLocationManger() {
+        
+        locationManager = CLLocationManager()
+        locationManager?.requestWhenInUseAuthorization()
+    }
     
     // setup nav bar with bigger title
     func setupNavBar() {

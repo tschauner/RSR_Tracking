@@ -50,7 +50,7 @@ class InfoViewController: UIViewController {
         
         let lineView = UIView()
         lineView.translatesAutoresizingMaskIntoConstraints = false
-        lineView.backgroundColor = ViewController.rsrBlue
+        lineView.backgroundColor = HomeController.rsrBlue
         
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false

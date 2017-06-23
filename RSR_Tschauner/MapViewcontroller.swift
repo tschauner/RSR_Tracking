@@ -25,7 +25,7 @@ class MapViewController: UIViewController {
         
         initLocationManger()
         
-        animateView()
+    
         
     }
     
@@ -102,15 +102,26 @@ class MapViewController: UIViewController {
     // initializes location manger
     func initLocationManger() {
         
+        if CLLocationManager.locationServicesEnabled() {
+            switch(CLLocationManager.authorizationStatus()) {
+            case .notDetermined, .restricted, .denied:
+                print("No access")
+                let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+                showAlert(title: "GPS aanzetten", contentText: "U heeft deze app geen toegang gegeven voor GPS. Zet dit a.u.b. aan in uw instellingen.", actions: [action])
+            case .authorizedAlways, .authorizedWhenInUse:
+                animateView()
+            }
+        } else {
+            print("Location services are not enabled")
+        }
+        
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager?.requestWhenInUseAuthorization()
         DispatchQueue.main.async {
             self.locationManager?.startUpdatingLocation()
         }
     }
-    
     // setup nav bar title
     func setupNavBarTitle() {
         
@@ -229,6 +240,19 @@ class MapViewController: UIViewController {
         }, completion: nil)
     }
     
+    // show alert
+    func showAlert(title: String, contentText: String, actions: [UIAlertAction]) {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: title, message: contentText, preferredStyle: .alert)
+            for action in actions {
+                alertController.addAction(action)
+            }
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.error)
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
     
     // setup views (map, button, addressview)
     func setupViews() {
@@ -267,9 +291,10 @@ class MapViewController: UIViewController {
     }
     
     
+
+    
     // setup views for (headline, infotext, userAdress) in adress view
     func setupAddress(with text: String) {
-        
         
         let headline = UILabel()
         headline.translatesAutoresizingMaskIntoConstraints = false
