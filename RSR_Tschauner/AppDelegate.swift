@@ -24,7 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // background image in nav bar for all viewcontrollers
         let image = UIImage(named: "navig_bar_back")
         navigationBarAppearace.setBackgroundImage(image, for: .default)
+        
+        // color for every button in nav bar
         navigationBarAppearace.tintColor = ViewController.rsrGreen
+        
+        // makes the status bar white
         navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         
         window?.rootViewController = UINavigationController(rootViewController: ViewController())

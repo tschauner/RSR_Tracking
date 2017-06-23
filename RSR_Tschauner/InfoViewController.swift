@@ -10,7 +10,9 @@ import UIKit
 
 class InfoViewController: UIViewController {
     
-    let text = "Met de hulp van RSR blift u mobiel.RSR is dé leverancier van hulpmiddelen in de regio Noordoost-Nederland. Gedegen kennis en jarenlange ervaring zit in ons DNA verweven en leidt tot het beste advies. \n\nWilt u meer weten over onze producten en diensten, kijk dan op www.rsr.nl of bezoek onze showrooms in Silvolde en Nieuwleusen. We zijn iedere werkdag geopend van 8.00 tot 17.00 uur. Hier kunt u diverse hulpiddelen uitproberen en rustig bekiiken wat goed bij uw situatie aansluit. Samen met u zoeken we naar hulpmiddelen dat bij u past. RSR maakt mensen mobiel"
+    
+    // infotext in textview
+    let text = "Met de hulp van RSR blift u mobiel. RSR is dé leverancier van hulpmiddelen in de regio Noordoost-Nederland. Gedegen kennis en jarenlange ervaring zit in ons DNA verweven en leidt tot het beste advies. \n\nWilt u meer weten over onze producten en diensten, kijk dan op www.rsr.nl of bezoek onze showrooms in Silvolde en Nieuwleusen. We zijn iedere werkdag geopend van 8.00 tot 17.00 uur. Hier kunt u diverse hulpiddelen uitproberen en rustig bekiiken wat goed bij uw situatie aansluit. Samen met u zoeken we naar hulpmiddelen dat bij u past. RSR maakt mensen mobiel."
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +21,7 @@ class InfoViewController: UIViewController {
         
         setupViews()
     }
+    
     
     
     // setup bigger title
@@ -34,6 +37,8 @@ class InfoViewController: UIViewController {
         
     }
     
+    
+    // setup views for (headerImage, line, text)
     func setupViews() {
         
         view.backgroundColor = .white
@@ -54,6 +59,8 @@ class InfoViewController: UIViewController {
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.isSelectable = true
         textView.isEditable = false
+        
+        //highlights link in textview and makes in clickable
         textView.dataDetectorTypes = UIDataDetectorTypes.link
 
         // add views to subview

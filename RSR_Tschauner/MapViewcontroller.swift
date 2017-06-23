@@ -23,19 +23,13 @@ class MapViewController: UIViewController {
         
         setupViews()
         
-        locationManager = CLLocationManager()
-        locationManager?.delegate = self
-        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager?.requestWhenInUseAuthorization()
-        DispatchQueue.main.async {
-            self.locationManager?.startUpdatingLocation()
-        }
+        initLocationManger()
         
         animateView()
         
     }
     
-    
+    // ------ views -------
     
     let callButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -102,6 +96,21 @@ class MapViewController: UIViewController {
     }()
     
     
+    // ----- functions -------
+    
+    
+    // initializes location manger
+    func initLocationManger() {
+        
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager?.requestWhenInUseAuthorization()
+        DispatchQueue.main.async {
+            self.locationManager?.startUpdatingLocation()
+        }
+    }
+    
     // setup nav bar title
     func setupNavBarTitle() {
         
@@ -116,21 +125,21 @@ class MapViewController: UIViewController {
     }
     
     
-    // cancel call
+    // cancel call (popup fades out, shoes rest)
     @objc func cancelCall() {
         
         UIView.animate(withDuration: 0.3) {
             self.popup.alpha = 0
             self.cancelButton.alpha = 0
             self.secondCallButton.alpha = 0
-            
         }
+        
         callButton.isHidden = false
         addressView.isHidden = false
     }
     
     
-    //show pop up
+    // setup views for pop up (popup fades in, hides rest)
     @objc func showPopup() {
         
         UIView.animate(withDuration: 0.3) {
@@ -194,9 +203,8 @@ class MapViewController: UIViewController {
         image.centerYAnchor.constraint(equalTo: secondCallButton.centerYAnchor).isActive = true
         image.leftAnchor.constraint(equalTo: secondCallButton.leftAnchor, constant: 40).isActive = true
         
-        
-        
     }
+    
     
     // call function
     @objc func callEmergency() {
@@ -222,6 +230,44 @@ class MapViewController: UIViewController {
     }
     
     
+    // setup views (map, button, addressview)
+    func setupViews() {
+        
+        // image inside button
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.image = UIImage(named: "ic_phone")
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(mapView)
+        view.addSubview(callButton)
+        callButton.addSubview(image)
+        view.addSubview(addressView)
+        
+        
+        // setup constraints
+        mapView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
+        mapView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        mapView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        
+        callButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
+        callButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        callButton.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -50).isActive = true
+        callButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        image.centerYAnchor.constraint(equalTo: callButton.centerYAnchor).isActive = true
+        image.leftAnchor.constraint(equalTo: callButton.leftAnchor, constant: 50).isActive = true
+        
+        addressView.widthAnchor.constraint(equalToConstant: 250).isActive = true
+        addressView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        addressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        addressView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -110).isActive = true
+        
+    }
+    
+    
+    // setup views for (headline, infotext, userAdress) in adress view
     func setupAddress(with text: String) {
         
         
@@ -266,45 +312,10 @@ class MapViewController: UIViewController {
         infoText.widthAnchor.constraint(equalToConstant: 220).isActive = true
     }
     
-    func setupViews() {
-        
-        // image inside button
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "ic_call")
-        
-        view.backgroundColor = .white
-        
-        view.addSubview(mapView)
-        view.addSubview(callButton)
-        callButton.addSubview(image)
-        view.addSubview(addressView)
-        
-        
-        // setup constraints
-        mapView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
-        mapView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        mapView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        
-        callButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
-        callButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        callButton.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -50).isActive = true
-        callButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        image.centerYAnchor.constraint(equalTo: callButton.centerYAnchor).isActive = true
-        image.leftAnchor.constraint(equalTo: callButton.leftAnchor, constant: 50).isActive = true
-        
-        addressView.widthAnchor.constraint(equalToConstant: 250).isActive = true
-        addressView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        addressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        addressView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -110).isActive = true
-        
-    }
-    
     
 }
 
-extension MapViewController: CLLocationManagerDelegate, MKMapViewDelegate {
+extension MapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -322,6 +333,7 @@ extension MapViewController: CLLocationManagerDelegate, MKMapViewDelegate {
         
         pin.coordinate = userLocation
         
+        //add pin to map
         mapView.addAnnotation(pin)
         
         
@@ -330,10 +342,10 @@ extension MapViewController: CLLocationManagerDelegate, MKMapViewDelegate {
                 return
             }
             
+            //print each key value pair
 //            addressDict.forEach { print($0) }
             
             // Access each element manually
-            
             guard let street = addressDict["Thoroughfare"] as? String else { return }
             guard let number = addressDict["SubThoroughfare"] as? String else { return }
             guard let zip = addressDict["ZIP"] as? String else { return }
@@ -341,7 +353,10 @@ extension MapViewController: CLLocationManagerDelegate, MKMapViewDelegate {
             
             let text = "\(street) \(number),\n\(zip), \(city)"
             
+            //setup address when loaded
             self.setupAddress(with: text)
+            
+            // stop locating user (map stops moving)
             self.locationManager?.stopUpdatingLocation()
             
         })

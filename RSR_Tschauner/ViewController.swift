@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    //colors
+    // rsr colors
     static var rsrBlue = UIColor(red: 37/255, green: 161/255, blue: 196/255, alpha: 1)
     static var rsrGreen = UIColor(red: 203/255, green: 212/255, blue: 1/255, alpha: 1)
     
@@ -20,6 +20,9 @@ class ViewController: UIViewController {
         setupViews()
         setupNavBar()
     }
+    
+    
+    // ------ views ------
     
     let button: UIButton = {
         let button = UIButton(type: .custom)
@@ -34,6 +37,10 @@ class ViewController: UIViewController {
         button.addTarget(self, action: #selector(showUserLocation), for: .touchUpInside)
         return button
     }()
+    
+    
+    
+    // ------ functions -----
     
     // setup nav bar with bigger title
     func setupNavBar() {
@@ -79,7 +86,7 @@ class ViewController: UIViewController {
         backgroundImage.contentMode = .scaleAspectFill
         backgroundImage.image = UIImage(named: "img_background-i5")
         
-        
+        // image inside button
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: "ic_attention")
