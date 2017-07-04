@@ -85,6 +85,7 @@ class InfoViewController: UIViewController {
             case 0...768:
                 // ipad mini & ipad
                 setupViewsfrom(device: .iPadmini)
+                
                 print("mini")
             case 769...834:
                 // ipad pro 10 inch

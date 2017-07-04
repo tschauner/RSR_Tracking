@@ -16,8 +16,8 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavBar()
         initLocationManger()
-        
         detectScreenSizeAndAdjustViews()
     }
 
@@ -44,7 +44,7 @@ class HomeController: UIViewController {
         button.layer.cornerRadius = 8
         button.isHidden = true
         button.clipsToBounds = true
-        button.setTitle("   Over RSR", for: .normal)
+        button.setTitle("  Over RSR", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
         button.setBackgroundImage(UIImage(named: "btn_normal"), for: .normal)
         button.setBackgroundImage(UIImage(named: "btn_pressed"), for: .highlighted)
@@ -56,7 +56,6 @@ class HomeController: UIViewController {
     
     
     // ------ functions -----
-    
     
     // detects screens size of devices and adjust views
     func detectScreenSizeAndAdjustViews() {
@@ -76,19 +75,20 @@ class HomeController: UIViewController {
             switch screenWidth {
             case 0...320:
                 // iPhone 5 portrait
-                mapButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-                setupViewsWith(button: true)
+                setupViewsFor(device: .iPhone5)
             default:
                 // iPhone 6/7 Plus portrait
-                setupViewsWith(button: true)
+                setupViewsFor(device: .iPhone67plus)
             }
         case .pad:
             // iPad 2, Air, Retina and Mini etc Portrait
-            setupViewsWith(button: false)
+            setupViewsFor(device: .iPad)
         default:
             break
         }
     }
+    
+    
     
     // initializes location manger - request locations service
     func initLocationManger() {
@@ -100,36 +100,71 @@ class HomeController: UIViewController {
     // device options
     enum Devices {
         case iPad
-        case iPhone
+        case iPhone67plus
+        case iPhone5
     }
     
-    // adjust and setup views for each device
+    
+    // setup bigger navbar title
+    func setupNavBar() {
+        
+        let title = UILabel()
+        title.font = UIFont.systemFont(ofSize: 20)
+        title.textColor = .white
+        title.text = "RSR Revalidatieservice"
+        title.sizeToFit()
+        
+        navigationItem.titleView = title
+    }
+    
+    // shows infoButton in nav bar
+    func setupInfoButton() {
+        
+        let infoButton = UIBarButtonItem(image: UIImage(named: "ic_over_normal"), style: .plain, target: self, action: #selector(showInfo))
+        
+        navigationItem.rightBarButtonItem = infoButton
+    }
+    
+    // adjust and setup views for each iphone
     func setupViewsFor(device: Devices) {
         
-        let backGroundImageString: String
-        let buttonPadding: CGFloat
-        let buttonBottomPadding: CGFloat
+        var backGroundImageString: String
+        var buttonPadding: CGFloat
+        var buttonBottomPadding: CGFloat
+        var buttonImagePadding: CGFloat = 50
         
+        // adjust padding depending on device
         switch device {
-        case .iPhone:
+        case .iPhone67plus:
             backGroundImageString = "img_background-i5"
             buttonPadding = -50
             buttonBottomPadding = -50
+            buttonImagePadding = 50
+            setupInfoButton()
+        case .iPhone5:
+            backGroundImageString = "img_background-i5"
+            buttonPadding = -50
+            buttonBottomPadding = -50
+            buttonImagePadding = 20
+            setupInfoButton()
+            mapButton.setTitle("     RSR Pechulp", for: .normal)
         case .iPad:
             backGroundImageString = "img_background_ipad"
-            buttonPadding = -300
+            buttonPadding = -350
             buttonBottomPadding = -130
+            infoButton.isHidden = false
         }
         
+        // background Image in view
         let backgroundImage = UIImageView()
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.contentMode = .scaleAspectFill
         backgroundImage.image = UIImage(named: backGroundImageString)
         
-        // image inside button
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "ic_attention")
+        // image inside mapButton
+        let buttonImage = UIImageView()
+        buttonImage.translatesAutoresizingMaskIntoConstraints = false
+        buttonImage.image = UIImage(named: "ic_attention")
         
         // image inside button
         let infoImage = UIImageView()
@@ -140,9 +175,10 @@ class HomeController: UIViewController {
         // add views to subview
         view.addSubview(backgroundImage)
         view.addSubview(mapButton)
-        mapButton.addSubview(image)
+        mapButton.addSubview(buttonImage)
         infoButton.addSubview(infoImage)
         view.addSubview(infoButton)
+        
         
         //setup connstraints
         backgroundImage.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
@@ -154,8 +190,8 @@ class HomeController: UIViewController {
         mapButton.widthAnchor.constraint(equalTo: view.widthAnchor, constant: buttonPadding).isActive = true
         mapButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
-        image.centerYAnchor.constraint(equalTo: mapButton.centerYAnchor).isActive = true
-        image.leftAnchor.constraint(equalTo: mapButton.leftAnchor, constant: 50).isActive = true
+        buttonImage.centerYAnchor.constraint(equalTo: mapButton.centerYAnchor).isActive = true
+        buttonImage.leftAnchor.constraint(equalTo: mapButton.leftAnchor, constant: buttonImagePadding).isActive = true
         
         infoButton.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 20).isActive = true
         infoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -163,45 +199,10 @@ class HomeController: UIViewController {
         infoButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         infoImage.centerYAnchor.constraint(equalTo: infoButton.centerYAnchor).isActive = true
-        infoImage.leftAnchor.constraint(equalTo: infoButton.leftAnchor, constant: 50).isActive = true
+        infoImage.leftAnchor.constraint(equalTo: infoButton.leftAnchor, constant: 55).isActive = true
     }
     
     
-    
-    func setupViewsWith(button: Bool) {
-        
-        // setup nav bar with bigger title
-        let title = UILabel()
-        title.font = UIFont.systemFont(ofSize: 20)
-        title.textColor = .white
-        title.text = "RSR Revalidatieservice"
-        title.sizeToFit()
-        
-        navigationItem.titleView = title
-        
-        if button == true {
-            
-            // infoButton in navBar
-            let infoButton = UIBarButtonItem(image: UIImage(named: "ic_over_normal"), style: .plain, target: self, action: #selector(showInfo))
-            
-            navigationItem.rightBarButtonItem = infoButton
-            
-            // padding on left - right = 25
-            setupViewsFor(device: .iPhone)
-            
-            
-        } else if button == false {
-            
-            print("ipad button")
-            
-            infoButton.isHidden = false
-            
-            // padding for left - right = 150
-            setupViewsFor(device: .iPad)
-            
-        }
-        
-    }
     
     //user clicks on info button, show info view controller
     @objc func showInfo() {
